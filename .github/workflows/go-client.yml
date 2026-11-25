@@ -1,15 +1,6 @@
 name: Go client
 
-on:
-  push:
-    paths:
-      - 'go-client/**'
-      - '.github/workflows/go-client.yml'
-  pull_request:
-    paths:
-      - 'go-client/**'
-      - '.github/workflows/go-client.yml'
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 
 permissions:
   contents: read
@@ -19,15 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       XSTREAMING_REQUIRE_MEDIA_TESTS: '1'
-    defaults:
-      run:
-        working-directory: go-client
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go-client/go.mod
-          cache-dependency-path: go-client/go.sum
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
       - name: Install media test dependencies
         run: |
           sudo apt-get update
@@ -71,15 +59,12 @@ jobs:
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: go-client
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go-client/go.mod
-          cache-dependency-path: go-client/go.sum
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
       - name: Run native tests
         run: go test ./...
   cross-build:
@@ -93,15 +78,12 @@ jobs:
           - {goos: windows, goarch: amd64}
           - {goos: darwin, goarch: amd64}
           - {goos: darwin, goarch: arm64}
-    defaults:
-      run:
-        working-directory: go-client
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go-client/go.mod
-          cache-dependency-path: go-client/go.sum
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
       - name: Build preview binary
         run: |
           mkdir -p "$RUNNER_TEMP/go-client"

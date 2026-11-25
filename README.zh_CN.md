@@ -1,128 +1,38 @@
-> MyGo + Go 重写预览版请参阅 [Go 客户端说明](./go-client/README.zh_CN.md)。该版本仍在开发和验证中。
+# XStreaming Go 预览版
 
-<p align="center">
-  <a href="https://github.com/Geocld/XStreaming">
-    <img src="https://raw.githubusercontent.com/Geocld/XStreaming/main/images/logo.png" width="546">
-  </a>
-</p>
+这是使用 MyGo 和 Go 重写的早期预览，代码仍在开发中。微软账号登录、云游戏及 Xbox 主机串流流程、音视频和手柄输入尚未经过真实账号与设备的完整验证。本项目基于 [XStreamingDesktop](https://github.com/Geocld/XStreamingDesktop) 重写。
 
-<p align="center">
-  开源 Xbox/云游戏串流应用.
-</p>
+服务请求的消息对话框和虚拟键盘已提供实验性支持，包括密码输入和服务端取消，但尚未在真实云游戏中验证；其他系统界面请求可能仍不受支持。独立的主机文本发送功能仅适用于主机串流。
 
-## 简介
+可在主机列表下方开启“测试手柄”，不启动串流即可查看检测到的设备、按钮、摇杆和扳机状态；Windows 还可请求对应 XInput 手柄短暂震动，系统调用失败时界面会提示。开始串流时测试会自动停止。
 
-XStreaming 是一款开源的 Xbox/云游戏串流移动端客户端，借鉴了 [Greenlight](https://github.com/unknownskl/greenlight) 提供的 API 接口和相关实现。
+Linux 串流界面可手动启用或关闭 PulseAudio 麦克风（包括 PipeWire 的 PulseAudio 兼容服务）。默认使用系统输入；要使用其他设备，可在设置中刷新输入列表、查看设备描述并选择保存，也可手动填写名称（可通过 `pactl list short sources` 查看），留空则恢复默认。macOS 上同一控制会尝试通过 AVFoundation 采集系统默认输入，需要系统麦克风权限。Windows 上请先刷新 DirectShow 输入列表，选择并保存麦克风后再启用采集，也可手动填写设备名。FFmpeg 必须支持对应输入后端和 libopus。麦克风默认关闭，关闭或会话结束时停止采集。虚拟 PulseAudio 输入和 WebRTC 发送已通过本地测试，真实麦克风、macOS 和 Windows 采集及 Xbox 语音尚未验证。
 
-> 声明：XStreaming 与 Microsoft、Xbox 没有关联。所有权和商标属于其各自所有者。
+## 下载与运行
 
-## Android
+在本仓库的 GitHub Actions 中选择成功的 **Go client** 工作流运行，从 Artifacts 下载对应平台的 `xstreaming-go-*` 文件。构建产物不包含 FFmpeg：请自行安装同时包含 `ffmpeg` 和 `ffplay` 的版本，并将它们加入 PATH。程序用 `ffmpeg` 解码视频、用 `ffplay` 播放音频。
 
-在 Android 平台你可以使用 [XStreaming](https://github.com/Geocld/XStreaming)。
+macOS 从 Finder 启动时的 PATH 可能与终端不同；如果程序找不到 FFmpeg，可先在已配置 PATH 的终端中启动。
 
-## 功能
+Linux 和 macOS 解压后可能需要 `chmod +x xstreaming`，然后从终端运行 `./xstreaming`。Windows 运行 `xstreaming.exe`。这些产物是未经签名的预览二进制，尚未打包成安装程序。运行时还需要目标平台的 MyGo 图形环境，具体参见 [MyGo 文档](https://github.com/egoist/mygo)。
 
-- 跨平台，支持 Windows、macOS、Linux
-- 串流 Xbox One、Xbox Series X|S 的音视频
-- 支持 1080P 分辨率
-- 支持外接、蓝牙手柄，支持手柄振动
-- 支持手柄按键映射
-- 免代理云游戏
-- IPv6 优先连接支持
-- 扳机振动
+## 从源码构建
 
-<img src="https://raw.githubusercontent.com/Geocld/XStreaming-desktop/main/images/console.jpg" /> 
-<img src="https://raw.githubusercontent.com/Geocld/XStreaming-desktop/main/images/xcloud.jpg" />
-<img src="https://raw.githubusercontent.com/Geocld/XStreaming-desktop/main/images/xcloud2.jpg" />
-<img src="https://raw.githubusercontent.com/Geocld/XStreaming-desktop/main/images/settings.jpg" />
+需要 Go 1.27.3 或更新版本以及 FFmpeg/ffplay。在仓库根目录执行：
 
-## Steam Deck
-
-### 从Flathub安装
-`XStreaming`已经上架Flathub，你可以直接在SteamDeck的桌面模式，使用应用商店（Discover）直接搜索XStreaming即可下载安装和后续的更新。
-
-[![Build/release](https://flathub.org/assets/badges/flathub-badge-en.svg)](https://flathub.org/apps/io.github.Geocld.XStreamingDesktop)
-
-
-### 手动安装
-手动安装请参阅 [XStreaming Steam Deck 指南](./wiki/steam-deck/README.zh_CN.md)
-
-## 本地开发
-
-### 环境要求
-- [NodeJs](https://nodejs.org/) >= 18
-- [Yarn](https://yarnpkg.com/) >= 1.22
-
-### 共建计划
-
-欢迎加入[共建计划](https://github.com/Geocld/XStreaming/issues/45)
-
-### 运行项目
-
-克隆本项目到本地:
-
-```
-git clone https://github.com/Geocld/XStreaming-desktop
-cd XStreaming-desktop
-```
-安装依赖:
-
-```
-yarn
+```sh
+go test ./...
+go build -o xstreaming ./cmd/xstreaming
+./xstreaming
 ```
 
-启动开发模式:
+Windows 上可运行 `go build -ldflags=-H=windowsgui -o xstreaming.exe ./cmd/xstreaming`，然后启动 `xstreaming.exe`。Linux 需要图形会话；读取手柄还需要访问对应 `/dev/input` 设备的权限。
 
-```
-npm run dev
-```
+## 当前范围
 
-## 开发者
+- 支持微软设备代码登录（可从窗口打开验证页面并复制代码），以及系统凭据库可用时的登录恢复；可在界面中退出登录。系统凭据库不可用时只在当前运行期间保存登录。
+- 支持查询主机、发送主机唤醒和关机请求、查询云游戏目录和尝试启动串流；主机需要允许远程管理，可选择串流前自动唤醒待机主机；唤醒或关机请求成功不代表操作已完成，可使用“Refresh consoles”刷新状态；云游戏取决于账号权益和地区；目录名称部分加载失败时，会保留已取得的名称并用 ID 显示其余条目。可搜索并分页浏览游戏，也可切换简体中文界面，设置串流分辨率、启动音量、IPv6 候选地址优先、游戏语言和目录市场；串流时可切换全屏及显示性能数据（解码帧率和写入解码器的 H.264 数据速率，不包含传输开销）；主机串流可发送文本，或选择断开连接后关机；发送文本时需先停用键盘手柄模式，更改语言或市场后会自动重新加载目录；目录市场只影响商品信息，不会更改账号权益；云串流区域可从账号返回的区域中选择。
+- 支持最多四个手柄的基本输入、可调摇杆死区和轮询频率，也可在串流时启用键盘手柄模式：WASD 为左摇杆、TFGH 为右摇杆、IJKL 为面键、方向键为方向键、1/4 为扳机、2/3 为肩键，Esc 退出键盘模式。串流界面可短按 Xbox 按钮，主机串流还可长按；可收起或重新显示控制栏，收起时键盘手柄模式仍可使用；画面显示可切换适应、裁剪填满和拉伸，选择会被保存。连接建立后若中断，客户端会等待 30 秒恢复，超时则结束会话并尝试清理远程会话；清理失败会在界面提示。轮询频率在下次启动串流时生效，较高频率会增加处理和网络开销。云游戏排队时会在服务提供数据时显示预计等待时间。Windows 的 XInput 双电机震动为实验功能，可在设置中关闭，更改在下次串流生效；尚未使用实体手柄验证；扳机震动、延迟或重复震动及 Linux/macOS 震动尚不支持。音频接收可对少量乱序包重新排序；音视频同步、延迟和真实 Xbox 兼容性尚未验证。
+- 串流使用微软、Google 和斗鱼的 STUN 服务发现网络地址，这些服务不是 TURN 中继。目录使用系统的本地配置路径，登录凭据使用系统凭据库；FFmpeg/ffplay 是独立运行依赖，不随产物分发。
 
-XStreaming 的发展离不开这些 Hacker 们，他们贡献了大量能力，也欢迎关注他们 ❤️
-
-<!-- readme: contributors -start -->
-<table>
-<tr>
-    <td align="center">
-        <a href="https://github.com/Geocld">
-            <img src="https://avatars.githubusercontent.com/u/13679095?v=4" width="90;" alt="Geocld"/>
-            <br />
-            <sub><b>Geocld</b></sub>
-        </a>
-    </td>
-    <td align="center">
-        <a href="https://github.com/TigerBeanst">
-            <img src="https://avatars.githubusercontent.com/u/3889846?v=4" width="90;" alt="TigerBeanst"/>
-            <br />
-            <sub><b>TigerBeanst</b></sub>
-        </a>
-    </td>
-    <td align="center">
-        <a href="https://github.com/Sirherobrine23">
-            <img src="https://avatars.githubusercontent.com/u/50121801?v=4" width="90;" alt="Sirherobrine23"/>
-            <br />
-            <sub><b>Sirherobrine23</b></sub>
-        </a>
-    </td>
-    <td align="center">
-        <a href="https://github.com/liamharper2453">
-            <img src="https://avatars.githubusercontent.com/u/25060863?v=4" width="90;" alt="liamharper2453"/>
-            <br />
-            <sub><b>liamharper2453</b></sub>
-        </a>
-    </td>
-    <td align="center">
-        <a href="https://github.com/xAbdoAT">
-            <img src="https://avatars.githubusercontent.com/u/160148781?v=4" width="90;" alt="xAbdoAT"/>
-            <br />
-            <sub><b>xAbdoAT</b></sub>
-        </a>
-    </td>
-  </tr>
-</table>
-<!-- readme: contributors -end -->
-
-### 开源协议
-
-XStreaming 遵循 [MIT 协议](./LICENSE).
+开发和测试说明另见 [英文说明](README.md)。

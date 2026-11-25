@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/egoist/mygo/ui"
-	"github.com/oroliy/XStreamingDesktop/go-client/media"
-	"github.com/oroliy/XStreamingDesktop/go-client/session"
-	"github.com/oroliy/XStreamingDesktop/go-client/settings"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/media"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/session"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/settings"
 	"github.com/pion/webrtc/v4"
 	pionmedia "github.com/pion/webrtc/v4/pkg/media"
 )

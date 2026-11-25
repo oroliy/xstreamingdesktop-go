@@ -10,8 +10,8 @@ import (
 
 	"github.com/egoist/mygo/plugins/game/gamepad"
 	"github.com/egoist/mygo/ui"
-	"github.com/oroliy/XStreamingDesktop/go-client/controller"
-	"github.com/oroliy/XStreamingDesktop/go-client/protocol"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/controller"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/protocol"
 )
 
 type controllerTestPad struct {

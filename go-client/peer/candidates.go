@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/oroliy/XStreamingDesktop/go-client/streaming"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/streaming"
 	"github.com/pion/sdp/v3"
 )
 

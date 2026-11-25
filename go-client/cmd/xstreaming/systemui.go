@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/egoist/mygo/ui"
-	"github.com/oroliy/XStreamingDesktop/go-client/peer"
-	"github.com/oroliy/XStreamingDesktop/go-client/protocol"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/peer"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/protocol"
 )
 
 type systemButton struct {

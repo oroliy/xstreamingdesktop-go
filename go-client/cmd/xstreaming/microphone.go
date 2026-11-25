@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/oroliy/XStreamingDesktop/go-client/media"
-	"github.com/oroliy/XStreamingDesktop/go-client/session"
-	"github.com/oroliy/XStreamingDesktop/go-client/settings"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/media"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/session"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/settings"
 	pionmedia "github.com/pion/webrtc/v4/pkg/media"
 )
 

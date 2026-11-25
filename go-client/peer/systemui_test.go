@@ -3,7 +3,7 @@ package peer
 import (
 	"context"
 	"encoding/json"
-	"github.com/oroliy/XStreamingDesktop/go-client/protocol"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/protocol"
 	"sync"
 	"sync/atomic"
 	"testing"

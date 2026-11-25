@@ -8,7 +8,7 @@ import (
 
 	"github.com/egoist/mygo/plugins/game/gamepad"
 	"github.com/egoist/mygo/ui"
-	"github.com/oroliy/XStreamingDesktop/go-client/protocol"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/protocol"
 )
 
 func TestControllerTestDisplaysStateAndStops(t *testing.T) {

@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/egoist/mygo/ui"
-	"github.com/oroliy/XStreamingDesktop/go-client/auth"
-	"github.com/oroliy/XStreamingDesktop/go-client/session"
-	"github.com/oroliy/XStreamingDesktop/go-client/settings"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/auth"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/session"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/settings"
 )
 
 func TestStreamControlsFitShortWindow(t *testing.T) {

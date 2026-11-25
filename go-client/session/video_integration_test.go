@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	appmedia "github.com/oroliy/XStreamingDesktop/go-client/media"
-	"github.com/oroliy/XStreamingDesktop/go-client/streaming"
+	appmedia "github.com/oroliy/xstreamingdesktop-go/go-client/media"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/streaming"
 	"github.com/pion/webrtc/v4"
 	pionmedia "github.com/pion/webrtc/v4/pkg/media"
 )

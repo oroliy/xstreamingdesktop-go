@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/oroliy/XStreamingDesktop/go-client/streaming"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/streaming"
 	"net/http"
 	"net/http/httptest"
 	"sync/atomic"

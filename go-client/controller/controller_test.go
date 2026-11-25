@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/egoist/mygo/plugins/game/gamepad"
 	"github.com/egoist/mygo/ui"
-	"github.com/oroliy/XStreamingDesktop/go-client/protocol"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/protocol"
 	"github.com/pion/webrtc/v4"
 	"math"
 	"testing"

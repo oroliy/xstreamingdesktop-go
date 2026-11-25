@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/egoist/mygo/plugins/game/gamepad"
-	"github.com/oroliy/XStreamingDesktop/go-client/peer"
-	"github.com/oroliy/XStreamingDesktop/go-client/protocol"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/peer"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/protocol"
 	"github.com/pion/webrtc/v4"
 )
 

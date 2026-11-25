@@ -1,4 +1,4 @@
-module github.com/oroliy/XStreamingDesktop/go-client
+module github.com/oroliy/xstreamingdesktop-go/go-client
 
 go 1.27.3
 

@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/oroliy/XStreamingDesktop/go-client/auth"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/auth"
 )
 
 type Client struct {

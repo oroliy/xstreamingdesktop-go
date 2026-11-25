@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/oroliy/XStreamingDesktop/go-client/peer"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/peer"
 	"github.com/pion/webrtc/v4"
 )
 

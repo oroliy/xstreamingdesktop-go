@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/egoist/mygo/ui"
-	"github.com/oroliy/XStreamingDesktop/go-client/peer"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/peer"
 )
 
 func TestLongSystemDialogCanScrollToCancel(t *testing.T) {

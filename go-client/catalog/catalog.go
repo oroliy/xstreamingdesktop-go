@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/oroliy/XStreamingDesktop/go-client/streaming"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/streaming"
 )
 
 type Client struct {

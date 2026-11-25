@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/oroliy/XStreamingDesktop/go-client/peer"
-	"github.com/oroliy/XStreamingDesktop/go-client/streaming"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/peer"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/streaming"
 	"github.com/pion/webrtc/v4"
 )
 

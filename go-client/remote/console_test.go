@@ -3,7 +3,7 @@ package remote
 import (
 	"context"
 	"encoding/json"
-	"github.com/oroliy/XStreamingDesktop/go-client/auth"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/auth"
 	"net/http"
 	"net/http/httptest"
 	"testing"

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/oroliy/XStreamingDesktop/go-client/protocol"
+	"github.com/oroliy/xstreamingdesktop-go/go-client/protocol"
 	"github.com/pion/webrtc/v4"
 )
 

@@ -24,11 +24,12 @@ func (c *Client) Connect(ctx context.Context, id, transferToken string) error {
 
 // SessionID validates the path returned by the play endpoint and extracts its ID.
 func (c *Client) SessionID(result PlayResult) (string, error) {
-	prefix := "/v5/sessions/"
-	if !strings.HasPrefix(result.SessionPath, prefix) {
+	prefix := "v5/sessions/"
+	path := strings.TrimPrefix(result.SessionPath, "/")
+	if !strings.HasPrefix(path, prefix) {
 		return "", errors.New("invalid session path")
 	}
-	id := strings.TrimPrefix(result.SessionPath, prefix)
+	id := strings.TrimPrefix(path, prefix)
 	if strings.HasPrefix(id, c.kind+"/") {
 		id = strings.TrimPrefix(id, c.kind+"/")
 	}

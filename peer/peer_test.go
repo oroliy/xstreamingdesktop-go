@@ -22,9 +22,18 @@ func TestLocalNegotiationAndDataChannel(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer remote.Close()
+	closed := make(chan string, 1)
+	local.OnCriticalChannelClose(func(name string) {
+		select {
+		case closed <- name:
+		default:
+		}
+	})
+	remoteInput := make(chan *webrtc.DataChannel, 1)
 	received := make(chan string, 1)
 	remote.OnDataChannel(func(dc *webrtc.DataChannel) {
 		if dc.Label() == "input" {
+			remoteInput <- dc
 			dc.OnMessage(func(msg webrtc.DataChannelMessage) { received <- string(msg.Data) })
 		}
 	})
@@ -93,6 +102,18 @@ func TestLocalNegotiationAndDataChannel(t *testing.T) {
 		}
 	case <-ctx.Done():
 		t.Fatal(ctx.Err())
+	}
+	input := <-remoteInput
+	if err := input.Close(); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case name := <-closed:
+		if name != "input" {
+			t.Fatalf("closed %q", name)
+		}
+	case <-ctx.Done():
+		t.Fatal("input closure not reported")
 	}
 }
 func TestRejectEmptyAnswer(t *testing.T) {

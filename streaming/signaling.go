@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -111,7 +112,12 @@ func (c *Client) pollExchange(ctx context.Context, path string) (json.RawMessage
 			return result, nil
 		}
 		if len(reply.ErrorDetails) > 0 && string(reply.ErrorDetails) != "null" {
-			return nil, fmt.Errorf("streaming exchange failed: %s", reply.ErrorDetails)
+			var details struct {
+				Code string `json:"code"`
+			}
+			if json.Unmarshal(reply.ErrorDetails, &details) != nil || details.Code != "AgentNotListening" || !strings.HasSuffix(path, "/sdp") {
+				return nil, fmt.Errorf("streaming exchange failed: %s", reply.ErrorDetails)
+			}
 		}
 		timer := time.NewTimer(time.Second)
 		select {

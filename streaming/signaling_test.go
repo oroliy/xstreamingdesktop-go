@@ -3,6 +3,7 @@ package streaming
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -156,5 +157,47 @@ func TestStartUsesSelectedGameLanguage(t *testing.T) {
 	c, _ := NewClient(s.URL, "token", "cloud", s.Client())
 	if _, err := c.Start(context.Background(), PlayOptions{Target: "game", Locale: "pt-BR"}); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestSDPPollsUntilAgentListens(t *testing.T) {
+	var posts, polls atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			posts.Add(1)
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		if polls.Add(1) == 1 {
+			fmt.Fprint(w, `{"errorDetails":{"code":"AgentNotListening"}}`)
+			return
+		}
+		fmt.Fprint(w, `{"exchangeResponse":"{\"sdp\":\"answer\"}"}`)
+	}))
+	defer server.Close()
+	client, _ := NewClient(server.URL, "token", "home", server.Client())
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+	defer cancel()
+	answer, err := client.ExchangeSDP(ctx, "abc", "offer", false)
+	if err != nil || string(answer) != `{"sdp":"answer"}` || posts.Load() != 1 || polls.Load() != 2 {
+		t.Fatalf("answer=%s posts=%d polls=%d err=%v", answer, posts.Load(), polls.Load(), err)
+	}
+}
+
+func TestSDPAgentNotListeningHonorsCancellation(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		fmt.Fprint(w, `{"errorDetails":{"code":"AgentNotListening"}}`)
+	}))
+	defer server.Close()
+	client, _ := NewClient(server.URL, "token", "home", server.Client())
+	ctx, cancel := context.WithTimeout(context.Background(), 150*time.Millisecond)
+	defer cancel()
+	_, err := client.ExchangeSDP(ctx, "abc", "offer", false)
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("expected deadline exceeded, got %v", err)
 	}
 }

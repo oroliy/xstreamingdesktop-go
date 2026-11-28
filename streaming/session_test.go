@@ -57,7 +57,7 @@ func TestSessionIDPaths(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		for _, path := range []string{"/v5/sessions/abc", "/v5/sessions/" + kind + "/abc"} {
+		for _, path := range []string{"/v5/sessions/abc", "/v5/sessions/" + kind + "/abc", "v5/sessions/abc", "v5/sessions/" + kind + "/abc"} {
 			id, err := client.SessionID(PlayResult{SessionPath: path})
 			if err != nil || id != "abc" {
 				t.Errorf("%s: %q: got %q, %v", kind, path, id, err)
@@ -67,7 +67,7 @@ func TestSessionIDPaths(t *testing.T) {
 		if kind == other {
 			other = "cloud"
 		}
-		for _, path := range []string{"/v5/sessions/" + other + "/abc", "/v5/sessions/" + kind + "/../abc", "/v5/sessions/" + kind + "/", "https://example.com/v5/sessions/abc"} {
+		for _, path := range []string{"//v5/sessions/abc", "v5/sessions/" + other + "/abc", "/v5/sessions/" + other + "/abc", "/v5/sessions/" + kind + "/../abc", "/v5/sessions/" + kind + "/", "https://example.com/v5/sessions/abc"} {
 			if _, err := client.SessionID(PlayResult{SessionPath: path}); err == nil {
 				t.Errorf("%s: accepted %q", kind, path)
 			}

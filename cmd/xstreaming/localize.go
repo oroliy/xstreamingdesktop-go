@@ -3,6 +3,8 @@ package main
 import "strings"
 
 var chinese = map[string]string{
+	"Streaming control connection closed; please retry.": "串流控制连接已断开，请重试。",
+	"Streaming session": "串流中", "Connecting your stream": "正在连接串流",
 	"YOUR PLAY, ANYWHERE": "随时随地，畅玩游戏", "Welcome to XStreaming": "欢迎使用 XStreaming", "Sign in to connect your console and discover cloud games.": "登录后连接主机，探索云游戏。",
 	"Your Xbox, ready when you are.": "连接你的 Xbox，随时开始游戏。", "Your consoles": "我的主机", "Connect to a console on your account.": "连接此账号下的 Xbox 主机。", "No consoles to show yet.": "暂无可显示的主机。",
 	"Controller": "手柄", "Check your controller before playing.": "开始游戏前，先检查手柄状态。", "Make your streaming experience your own.": "按你的习惯设置串流体验。", "Find your next game.": "发现下一款想玩的游戏。",
@@ -35,6 +37,7 @@ var chinese = map[string]string{
 	"Loading cloud games…": "正在加载云游戏…", "Cloud games unavailable for this account or region.": "当前账号或地区无法使用云游戏。", "Invalid cloud service region.": "云服务区域无效。", "Unable to load cloud games.": "无法加载云游戏。", "Home streaming unavailable; checking cloud games.": "主机串流不可用，正在检查云游戏。", "System credential store unavailable; sign in manually.": "系统凭据库不可用，请手动登录。", "Unable to save renewed login; sign in may be required next time.": "无法保存更新的登录信息，下次可能需要重新登录。", "Unable to open browser; enter the address manually.": "无法打开浏览器，请手动输入地址。",
 }
 var chinesePrefixes = []struct{ en, zh string }{
+	{"Streaming control connection closed; remote cleanup failed: ", "串流控制连接已断开，远程会话清理失败："},
 	{"Unable to list microphone inputs: ", "无法获取麦克风输入："},
 	{"Microphone failed: ", "麦克风启动或采集失败："},
 	{"Connection did not recover; remote session cleanup failed: ", "连接未能恢复，且远程会话清理失败："},

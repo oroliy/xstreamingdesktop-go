@@ -18,6 +18,7 @@ import (
 var ErrConnectionTimeout = errors.New("timed out waiting for WebRTC connection")
 var ErrHandshakeTimeout = errors.New("timed out waiting for control handshake")
 var ErrDisconnectTimeout = errors.New("WebRTC connection did not recover")
+var ErrDataChannelClosed = errors.New("streaming control channel closed")
 
 // CleanupError reports a failure to stop a remote session after startup failed.
 type CleanupError struct{ Err error }
@@ -112,7 +113,35 @@ func Start(ctx context.Context, client *streaming.Client, opts Options) (_ *Sess
 			cancel(errors.New("WebRTC connection failed"))
 		}
 	})
-	s.peer.StartControlWithUI(live, opts.OnError, opts.OnSystemUI)
+	channelClosed := func(name string) {
+		select {
+		case <-s.peer.Ready():
+			if live.Err() == nil {
+				cancel(fmt.Errorf("%w: %s", ErrDataChannelClosed, name))
+			}
+		default:
+		}
+	}
+	s.peer.OnCriticalChannelClose(channelClosed)
+	go func() {
+		select {
+		case <-live.Done():
+			return
+		case <-s.peer.Ready():
+		}
+		for _, name := range []string{"input", "control", "message"} {
+			state := s.peer.Channel(name).ReadyState()
+			if state == webrtc.DataChannelStateClosing || state == webrtc.DataChannelStateClosed {
+				channelClosed(name)
+				return
+			}
+		}
+	}()
+	s.peer.StartControlWithUI(live, func(err error) {
+		if opts.OnError != nil {
+			opts.OnError(fmt.Errorf("control channel: %w", err))
+		}
+	}, opts.OnSystemUI)
 	offer, err := s.peer.Offer(signaling)
 	if err != nil {
 		return nil, fmt.Errorf("create WebRTC offer: %w", err)

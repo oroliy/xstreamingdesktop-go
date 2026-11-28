@@ -1034,6 +1034,7 @@ func (a *app) startStreamAsync(ctx context.Context, client *streaming.Client, cr
 }
 
 func (a *app) startStream(ctx context.Context, client *streaming.Client, credentials *auth.Session, target string, prefs settings.Settings, powerOff *atomic.Bool, wakeBefore bool) error {
+	streamCtx := ctx
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	if err := media.CheckDependencies(); err != nil {
@@ -1104,9 +1105,9 @@ func (a *app) startStream(ctx context.Context, client *streaming.Client, credent
 			closeErr := player.Close()
 			if ctx.Err() == nil {
 				if closeErr != nil {
-					onError(closeErr)
+					onError(fmt.Errorf("audio player: %w", closeErr))
 				} else if readErr != nil {
-					onError(readErr)
+					onError(fmt.Errorf("audio stream: %w", readErr))
 				}
 			}
 			return
@@ -1134,9 +1135,9 @@ func (a *app) startStream(ctx context.Context, client *streaming.Client, credent
 		closeErr := decoder.Close()
 		if ctx.Err() == nil {
 			if closeErr != nil {
-				onError(closeErr)
+				onError(fmt.Errorf("video decoder: %w", closeErr))
 			} else if readErr != nil {
-				onError(readErr)
+				onError(fmt.Errorf("video stream: %w", readErr))
 			}
 		}
 	}
@@ -1144,7 +1145,7 @@ func (a *app) startStream(ctx context.Context, client *streaming.Client, credent
 	var connectedOnce sync.Once
 	s, err := session.Start(ctx, client, session.Options{Play: streaming.PlayOptions{Target: target, Resolution: prefs.ResolutionCode(), Locale: prefs.Language}, OnSystemUI: func(request *peer.SystemUIRequest) {
 		a.update(func() {
-			if ctx.Err() != nil || a.streamCtx != ctx || a.streamCancel == nil {
+			if ctx.Err() != nil || a.streamCtx != streamCtx || a.streamCancel == nil {
 				_ = request.Cancel()
 				return
 			}
@@ -1158,7 +1159,7 @@ func (a *app) startStream(ctx context.Context, client *streaming.Client, credent
 				_ = request.Cancel()
 				return
 			}
-			prompt.streamCtx = ctx
+			prompt.streamCtx = streamCtx
 			a.enqueueSystemPrompt(prompt)
 			go func() {
 				<-request.Done()
@@ -1380,6 +1381,7 @@ func (a *app) startStream(ctx context.Context, client *streaming.Client, credent
 	failed := ctx.Err() == nil
 	connectionTimedOut := failed && (errors.Is(s.Err(), session.ErrConnectionTimeout) || errors.Is(s.Err(), session.ErrHandshakeTimeout))
 	disconnectTimedOut := failed && errors.Is(s.Err(), session.ErrDisconnectTimeout)
+	channelClosed := failed && errors.Is(s.Err(), session.ErrDataChannelClosed)
 	cleanupErr := s.Close()
 	a.update(func() {
 		if powerOff.Load() {
@@ -1403,7 +1405,11 @@ func (a *app) startStream(ctx context.Context, client *streaming.Client, credent
 		a.keyboardEnabled = false
 		a.keyboard.Set(false, protocol.Gamepad{})
 		a.keyboard.ClearNexus()
-		if disconnectTimedOut && cleanupErr == nil {
+		if channelClosed && cleanupErr == nil {
+			a.status = "Streaming control connection closed; please retry."
+		} else if channelClosed {
+			a.status = "Streaming control connection closed; remote cleanup failed: " + cleanupErr.Error()
+		} else if disconnectTimedOut && cleanupErr == nil {
 			a.status = "Connection did not recover; please retry."
 		} else if disconnectTimedOut {
 			a.status = "Connection did not recover; remote session cleanup failed: " + cleanupErr.Error()

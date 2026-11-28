@@ -16,10 +16,6 @@ var dashMuted = ui.Hex("#9aa9a5")
 var dashGreen = ui.Hex("#a9e776")
 
 func (a *app) view(c *ui.Context) {
-	if a.streamCancel != nil || a.systemPrompt != nil || a.frame != nil {
-		a.legacyView(c)
-		return
-	}
 	theme := ui.DarkTheme()
 	theme.Background = dashBackground
 	theme.Surface = ui.Hex("#24302f")
@@ -33,6 +29,14 @@ func (a *app) view(c *ui.Context) {
 	theme.InactiveAccent = dashGreen
 	theme.Radius = 8
 	c.SetTheme(theme)
+	if a.streamCancel != nil {
+		a.streamView(c)
+		return
+	}
+	if a.systemPrompt != nil || a.frame != nil {
+		a.legacyView(c)
+		return
+	}
 	a.dashboard(c)
 }
 

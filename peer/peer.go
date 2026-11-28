@@ -97,6 +97,15 @@ func (p *Peer) AddCandidate(candidate string, mid string, line uint16) error {
 	return p.conn.AddICECandidate(init)
 }
 
+// OnCriticalChannelClose reports closure of channels needed for streaming.
+// A closed SCTP data channel cannot be reopened on the existing connection.
+func (p *Peer) OnCriticalChannelClose(fn func(string)) {
+	for _, name := range []string{"input", "control", "message"} {
+		name := name
+		p.channels[name].OnClose(func() { fn(name) })
+	}
+}
+
 // OnConnectionStateChange registers a callback for transport state changes.
 func (p *Peer) OnConnectionStateChange(fn func(webrtc.PeerConnectionState)) {
 	p.conn.OnConnectionStateChange(fn)

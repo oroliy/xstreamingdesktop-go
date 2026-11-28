@@ -49,7 +49,7 @@ func TestLibraryAndStop(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	a := &app{client: &streaming.Client{}, credentials: auth.NewSession("x"), consoles: []streaming.Console{{ServerID: "123", Name: "Living Room", ConsoleType: "XboxSeriesX", PowerState: "On"}}, titles: []streaming.Title{{TitleID: "game", Name: "Sample Game"}}}
 	tt := ui.NewTester(a.view, 1024, 768)
-	if !tt.HasText("Living Room (XboxSeriesX) — On") || !tt.HasText("Sample Game") || !tt.HasText("Power off console") {
+	if !tt.HasText("Living Room") || !tt.HasText("XboxSeriesX  ·  On") || !tt.HasText("Power off console") {
 		t.Fatal(tt.Texts())
 	}
 	a.streamCancel = cancel
@@ -97,6 +97,7 @@ func TestLibraryAndStop(t *testing.T) {
 
 func TestCloudAccountWithoutHomeClient(t *testing.T) {
 	a := &app{credentials: auth.NewSession("x"), cloudStatus: "3 games", titles: []streaming.Title{{TitleID: "game", Name: "Cloud title"}}}
+	a.page = "cloud"
 	tt := ui.NewTester(a.view, 1024, 768)
 	if tt.HasText("Sign in with Microsoft") || !tt.HasText("Sign out") || !tt.HasText("Cloud title") {
 		t.Fatal(tt.Texts())
@@ -105,6 +106,7 @@ func TestCloudAccountWithoutHomeClient(t *testing.T) {
 
 func TestCloudGameSearch(t *testing.T) {
 	a := &app{prefs: settings.Defaults(), credentials: auth.NewSession("x"), titles: []streaming.Title{{TitleID: "1", Name: "Halo Infinite"}, {TitleID: "2", Name: "Forza Horizon"}}}
+	a.page = "cloud"
 	tt := ui.NewTester(a.view, 1024, 768)
 	if !tt.HasText("Halo Infinite") || !tt.HasText("Forza Horizon") {
 		t.Fatal(tt.Texts())
@@ -119,6 +121,7 @@ func TestCloudGameSearch(t *testing.T) {
 func TestIPv6PreferencePersists(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "settings.json")
 	a := &app{prefs: settings.Defaults(), settingsPath: path}
+	a.page = "settings"
 	tt := ui.NewTester(a.view, 1024, 768)
 	if err := tt.Click("Prefer IPv6 candidates"); err != nil {
 		t.Fatal(err)
@@ -217,7 +220,7 @@ func TestChineseInterface(t *testing.T) {
 	prefs.UILanguage = "简体中文"
 	a := &app{prefs: prefs, status: "Connected; waiting for video…"}
 	tt := ui.NewTester(a.view, 1024, 768)
-	for _, text := range []string{"使用微软账号登录", "主机", "设置", "界面语言", "已连接，正在等待视频…"} {
+	for _, text := range []string{"使用微软账号登录", "主机", "设置", "已连接，正在等待视频…"} {
 		if !tt.HasText(text) {
 			t.Fatalf("missing %q in %v", text, tt.Texts())
 		}
@@ -333,6 +336,7 @@ func TestCloudCatalogPaginationAndSearch(t *testing.T) {
 		titles = append(titles, streaming.Title{TitleID: fmt.Sprintf("id-%d", i), Name: fmt.Sprintf("Game %03d", i)})
 	}
 	a := &app{prefs: settings.Defaults(), titles: titles}
+	a.page = "cloud"
 	tt := ui.NewTester(a.view, 1024, 1200)
 	if !tt.HasText("Game 000") || tt.HasText("Game 040") || !tt.HasText("Games 1–40 of 85") {
 		t.Fatalf("unexpected first page: %v", tt.Texts())
@@ -493,6 +497,7 @@ func TestDisconnectAndPowerOffButtonForHomeStream(t *testing.T) {
 func TestWakeBeforeStreamPreferencePersists(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "settings.json")
 	a := &app{prefs: settings.Defaults(), settingsPath: path}
+	a.page = "settings"
 	tt := ui.NewTester(a.view, 1024, 768)
 	if err := tt.Click("Wake standby console before streaming"); err != nil {
 		t.Fatal(err)

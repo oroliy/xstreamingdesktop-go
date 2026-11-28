@@ -212,6 +212,7 @@ func TestMicrophoneSourceSettingsUI(t *testing.T) {
 	}
 	path := filepath.Join(t.TempDir(), "settings.json")
 	a := &app{prefs: settings.Defaults(), settingsPath: path}
+	a.page = "settings"
 	tt := ui.NewTester(a.view, 1024, 768)
 	label, source := "PulseAudio input name", "alsa_input.example"
 	if runtime.GOOS == "windows" {
@@ -244,6 +245,7 @@ func TestChooseDiscoveredMicrophoneSource(t *testing.T) {
 	}
 	path := filepath.Join(t.TempDir(), "settings.json")
 	a := &app{prefs: settings.Defaults(), settingsPath: path, micSourceDraft: "default", micSources: []media.PulseSource{{Name: "virtual_mic", Description: "Virtual mic"}}}
+	a.page = "settings"
 	tt := ui.NewTester(a.view, 1024, 768)
 	if err := tt.Click("Available microphone inputs"); err != nil {
 		t.Fatal(err)
@@ -270,6 +272,7 @@ func TestMicrophoneDiscoveryFailureKeepsManualChoice(t *testing.T) {
 	if a.micSourcesLoading || a.micSourceDraft != "disconnected_mic" || !reflect.DeepEqual(a.micSources, []media.PulseSource{{Name: "previous_mic"}}) {
 		t.Fatal("failed discovery changed the existing selection")
 	}
+	a.page = "settings"
 	tt := ui.NewTester(a.view, 1024, 768)
 	if !tt.HasText("Unable to list microphone inputs: service unavailable") {
 		t.Fatal("discovery failure was not shown")

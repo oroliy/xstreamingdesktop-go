@@ -127,7 +127,7 @@ func (a *app) controllerTestView(c *ui.Context) {
 	if a.controllerTestCancel != nil {
 		label = "Stop controller test"
 	}
-	if ui.Button(c.Key("controller-test"), a.tr(label)).Clicked() {
+	if ui.Button(c.Key("controller-test"), a.tr(label)).Width(180).Clicked() {
 		if a.controllerTestCancel == nil {
 			a.startControllerTest()
 		} else {

@@ -54,9 +54,9 @@ func TestStreamControlsFitNarrowWindow(t *testing.T) {
 }
 
 func TestSettingsFitNarrowWindow(t *testing.T) {
-	a := &app{prefs: settings.Defaults()}
+	a := &app{prefs: settings.Defaults(), page: "settings"}
 	tt := ui.NewTester(a.view, 480, 480)
-	baseline := ui.NewTester((&app{prefs: settings.Defaults()}).view, 1024, 1200)
+	baseline := ui.NewTester((&app{prefs: settings.Defaults(), page: "settings"}).view, 1024, 1200)
 	check := func(text string) {
 		t.Helper()
 		r, ok := tt.Find(text)

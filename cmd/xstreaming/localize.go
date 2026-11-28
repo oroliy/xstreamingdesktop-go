@@ -3,6 +3,9 @@ package main
 import "strings"
 
 var chinese = map[string]string{
+	"YOUR PLAY, ANYWHERE": "随时随地，畅玩游戏", "Welcome to XStreaming": "欢迎使用 XStreaming", "Sign in to connect your console and discover cloud games.": "登录后连接主机，探索云游戏。",
+	"Your Xbox, ready when you are.": "连接你的 Xbox，随时开始游戏。", "Your consoles": "我的主机", "Connect to a console on your account.": "连接此账号下的 Xbox 主机。", "No consoles to show yet.": "暂无可显示的主机。",
+	"Controller": "手柄", "Check your controller before playing.": "开始游戏前，先检查手柄状态。", "Make your streaming experience your own.": "按你的习惯设置串流体验。", "Find your next game.": "发现下一款想玩的游戏。",
 	"Test controllers": "测试手柄", "Stop controller test": "结束手柄测试", "No controllers detected.": "未检测到手柄。", "Buttons: none": "按键：无", "Buttons: ": "按键：",
 	"Test vibration": "测试震动", "Controller vibration test unavailable.": "无法测试手柄震动。",
 	"If a connected controller is missing, check read access to /dev/input/event*.": "如果已连接的手柄未显示，请检查对 /dev/input/event* 的读取权限。",

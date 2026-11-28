@@ -31,6 +31,7 @@ import (
 )
 
 type app struct {
+	page                     string
 	win                      *mygo.Window
 	ctx                      context.Context
 	cancel                   context.CancelFunc
@@ -91,7 +92,7 @@ type app struct {
 	controllerTestRumble     controllerTestVibrator
 }
 
-func (a *app) view(c *ui.Context) {
+func (a *app) legacyView(c *ui.Context) {
 	ui.Column(c).Fill().Center().Gap(12).Children(func() {
 		a.showSystemPrompt(c)
 		if a.streamCancel != nil && a.controlsHidden {
